@@ -1,0 +1,61 @@
+
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <map>
+#include <functional>
+#include <queue>
+#include <vector>
+using namespace std;
+#define INF 1234123412
+#define MAXV 10001
+#define MAXE 100001
+int V, E, S, T;
+int N, K;
+
+
+int fair[23][30001];
+int C, D;
+int sum;
+int pos[100];//每个放砝码的位置的横坐标
+int fama[100];//每个砝码的重量
+
+int main()
+{
+	
+	while (cin >> C >> D)
+	{
+		sum = 0;
+		memset(fama, 0, sizeof(fama));
+		memset(pos, 0, sizeof(pos));
+		for (int i = 1;i <= C;i++)
+		{
+			cin >> pos[i];
+		}
+		for (int j = 1;j <= D;j++)
+		{
+			cin >> fama[j];
+			sum += fama[j];
+		}
+		//fama[0] = -1;
+		//pos[0] - 1;
+		sort(fama+1, fama + D + 1);
+		sort(pos+1, pos + C + 1);
+		memset(fair, 0, sizeof(fair));
+		fair[0][10000] = 1;
+		int left = sum*pos[1];
+		int right = sum*pos[C];
+		for (int i = 1;i <= D;i++)//使用前i个砝码
+		{
+			for (int j = left;j <= right;j++)//平衡度
+			{
+				for (int k = 1;k <= C;k++)//第i个砝码放在第k个位置
+				{
+					if (j - fama[i] * pos[k] >= left&& j - fama[i] * pos[k] <= right)fair[i][10000 + j] += fair[i - 1][10000 + j - fama[i] * pos[k]];
+				}
+			}
+		}
+		cout << fair[D][10000] << endl;
+	}
+	return 0;
+}

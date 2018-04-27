@@ -1,0 +1,63 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <string>
+#include <string.h>
+using namespace std;
+int N, K;
+int pre[50010];
+int delta[50010];
+
+void init(int n)
+{
+	for (int i = 0;i <= n;i++)
+	{
+		pre[i] = i;
+		delta[i] = 0;
+	}
+}
+
+int find(int x)
+{
+	if (pre[x] == x)return x;
+	int fx = pre[x];
+	pre[x] = find(pre[x]);
+	delta[x] = (delta[x] + delta[fx]) % 3;
+	return pre[x];
+}
+
+void join(int x, int y, int fx, int fy, int type)
+{
+	pre[fy] = fx;
+	delta[fy] = (delta[x] + type + 3 - delta[y]) % 3;
+}
+
+
+int main()
+{
+	int tag, x, y;
+	scanf("%d%d", &N, &K);
+	init(N);
+	int fakenews = 0;
+	for (int i = 1;i <= K;i++)
+	{
+		scanf("%d%d%d", &tag, &x, &y);
+		if (x > N || y > N)
+		{
+			fakenews++;
+			continue;
+		}
+		int fx = find(x);
+		int fy = find(y);
+		if (fx == fy)
+		{
+			int t = (3 - delta[x] + delta[y]) % 3;
+			if (t != tag - 1)fakenews++;
+		}
+		else
+		{
+			join(x, y, fx, fy, tag - 1);
+		}
+	}
+	printf("%d\n", fakenews);
+}

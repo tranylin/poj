@@ -1,0 +1,64 @@
+
+对每个人创建两个元素：i和i+n。用3*n个元素来建立并查集，这个并查集可以维护如下信息：
+
+ 如果x和y不是同一个帮派的，就合并想x和y+n、y和x+n。   这样以后假设有个z，他和x不是一伙的，那么就合并x和z+n、z和x+n又因为x+n与y在一组里所以y与z自然也在一组。
+
+这样以后对于给出的任意两个人a、b，只要他们在一组里，就说明在一个帮派，如果a、b+n在一组，就说明他们不在一个帮派，否则不能确定。
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <string.h>
+#include <map>
+#include <set>
+#include <vector>
+#include <queue>
+#include <sstream>
+#include <algorithm>
+#include <functional>
+using namespace std;
+#define ll long long
+int N,M,T,Q;
+int pre[200010];
+int find(int x)
+{
+    return x==pre[x]?x:pre[x]=find(pre[x]);
+}
+void join(int x,int y)
+{
+    int fx=find(x);
+    int fy=find(y);
+    if(fx!=fy)
+    {
+            pre[fx]=fy;
+    }
+}
+int main()
+{
+    char s[2];
+    int x1,x2;
+    scanf("%d",&T);
+    for(int k=0;k<T;k++)
+    {
+        scanf("%d%d",&N,&M);
+        for(int i=1;i<=2*N;i++)
+        {
+            pre[i]=i;
+        }
+        for(int j=0;j<M;j++)
+        {
+            scanf("%s %d %d",&s,&x1,&x2);
+            if(s[0]=='D')
+            {
+                join(x1,x2+N);
+                join(x1+N,x2);
+            }
+            else
+            {
+                if(find(x1)==find(x2))printf("In the same gang.\n");
+                else if(find(x1)==find(x2+N))printf("In different gangs.\n");
+                else printf("Not sure yet.\n");
+            }
+        }
+    }
+    return 0;
+}

@@ -1,0 +1,113 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <queue>
+#include <vector>
+#include <map>
+#include <set>
+#include <stack>
+#include <string.h>
+#include <iterator>
+#include <functional>
+#include <stdio.h>
+using namespace std;
+#define MAXV 10001
+#define MAXE 1000010
+#define INF 2134567899
+#define ll long long
+#define MO 10007
+#define SIZE 1005
+#define MAXS 10005
+int N, K, M, T;
+const double EPS = 1E-8;
+typedef vector<double> vec;
+typedef vector<vec> mat;
+int sum;
+int ans;
+int a[505];
+int b[505];
+int DP[505][505];
+int pi[505][505];
+int pj[505][505];
+
+void shuchu(int x, int y)
+{
+	if (DP[x][y] == 0)
+	{
+		return;
+	}
+
+	int fx = pi[x][y];
+	int fy = pj[x][y];
+	shuchu(fx, fy);
+	if (y != 0 && DP[x][y] != DP[fx][fy] && DP[x][y] != 0)
+	{
+		cout << b[y];
+		sum++;
+		if (sum < ans)
+		{
+			cout << " ";
+		}
+		else cout << endl;
+		
+	}
+}
+// 
+
+int main()
+{
+		cin >> N;
+		for (int i = 1;i <= N;i++)
+		{
+			scanf("%d", &a[i]);
+		}
+		cin >> M;
+		for (int j = 1;j <= M;j++)
+		{
+			scanf("%d", &b[j]);
+		}
+		memset(DP, 0, sizeof(DP));
+		memset(pi, 0, sizeof(pi));
+		memset(pj, 0, sizeof(pj));
+
+		for (int i = 1;i <= N;i++)
+		{
+			int mx = 0;
+			int x = 0;
+			int y = 0;
+			for (int j = 1;j <= M;j++)
+			{
+				DP[i][j] = DP[i - 1][j];
+				pi[i][j] = i - 1;
+				pj[i][j] = j;
+				if (a[i] > b[j] && mx < DP[i - 1][j])
+				{
+					x = i - 1;
+					y = j;
+					mx = DP[i - 1][j];
+				}
+				if (a[i] == b[j])
+				{
+					DP[i][j] = mx + 1;
+					pi[i][j] = x;
+					pj[i][j] = y;
+				}
+			}
+		}
+		 ans = DP[N][M];
+		int ii = N;
+		int jj = M;
+		
+		for (int i = 1;i < M;i++)
+		{
+			if (DP[N][i] > ans)
+			{
+				jj = i;
+				ans = DP[N][i];
+			}
+		}
+		sum = 0;
+		cout << ans << endl;
+		shuchu(ii, jj);
+	return 0;
+}
