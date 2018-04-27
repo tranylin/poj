@@ -1,0 +1,111 @@
+#include <iostream>
+#include <string.h>
+#include <string>
+#include <stdio.h>
+#include <math.h>
+#include <algorithm>
+using namespace std;
+#define MAXV 10010
+#define MAXE 50010
+#define INF 1234123412
+int pre[1010];
+int vis[1010];
+double dp[1010][1010];
+int N;
+double D;
+
+int find(int x)
+{
+	return x == pre[x] ? x : pre[x] = find(pre[x]);
+}
+void  join(int x, int y)
+{
+	int tx = find(x);
+	int ty = find(y);
+	if (tx != ty)
+	{
+		pre[tx] = ty;
+	}
+}
+struct data
+{
+	int x;
+	int y;
+};
+struct data shuzu[10010];
+
+double dist(int a, int b)
+{
+	if (dp[a][b] >= 0.0)return dp[a][b];
+	else
+	{
+		dp[a][b] = sqrt((shuzu[a].x - shuzu[b].x)*(shuzu[a].x - shuzu[b].x) + (shuzu[a].y - shuzu[b].y)*(shuzu[a].y - shuzu[b].y));
+		dp[b][a] = dp[a][b];
+		return dp[a][b];
+	}
+}
+int main()
+{
+	int x1, x2;
+	memset(vis, 0, sizeof(vis));
+	for (int i = 0;i<1010;i++)
+	{
+		pre[i] = i;
+	}
+	for (int i = 0;i<1010;i++)
+	{
+		for (int j = 0;j<1010;j++)
+		{
+			dp[i][j] = -1;
+		}
+	}
+	scanf("%d%lf", &N, &D);
+	for (int i = 1;i <= N;i++)
+	{
+		scanf("%d%d", &x1, &x2);
+		shuzu[i].x = x1;
+		shuzu[i].y = x2;
+	}
+	char c1;
+	while (cin >> c1)
+	{
+		if (c1 == 'O')
+		{
+			scanf("%d", &x1);
+			vis[x1] = 1;
+			for (int i = 1;i <= N;i++)
+			{
+				if (vis[i] == 1 && dist(x1, i) <= D)
+				{
+					join(x1, i);
+				}
+			}
+		}
+		else
+		{
+			scanf("%d%d", &x1, &x2);
+			if (find(x1) == find(x2))
+			{
+				printf("SUCCESS\n");
+			}
+			else
+			{
+				printf("FAIL\n");
+			}
+		}
+	}
+
+	return 0;
+}
+
+
+
+/*************
+
+4 2 1
+1 3 10
+2 4 20
+2 3 3
+
+*******/
+

@@ -1,0 +1,109 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <map>
+#include <set>
+using namespace std;
+#define maxn 40020
+int lazy[maxn*4];
+int shuzu[maxn];
+int shu[maxn];
+int xx[maxn];
+int yy[maxn];
+map<int,int> qq;
+int last;
+int T,N,M,K;
+void down(int l,int r,int rt)
+{
+    if(lazy[rt]!=-1)
+    {
+        lazy[rt*2]=lazy[rt];
+        lazy[rt*2+1]=lazy[rt];
+        lazy[rt]=-1;
+    }
+}
+
+void qujian(int l,int r,int rt,int ql,int qr,int val)
+{
+    if(ql<=l&&qr>=r)
+    {
+        lazy[rt]=val;
+        return;
+    }
+    int mid=(l+r)/2;
+    down(l,r,rt);
+    if(ql<=mid)qujian(l,mid,rt*2,ql,qr,val);
+    if(qr>mid)qujian(mid+1,r,rt*2+1,ql,qr,val);
+}
+
+void dfs(int l,int r,int rt)
+{
+    if(l==r)
+    {
+        if(lazy[rt]!=-1&&lazy[rt]!=last)
+        {
+            shuzu[lazy[rt]]++;
+        }
+         last=lazy[rt];
+        return ;
+    }
+    down(l,r,rt);
+    int mid=(l+r)/2;
+    dfs(l,mid,rt*2);
+    dfs(mid+1,r,rt*2+1);
+}
+
+int main()
+{
+    int N;
+    int x,y;
+    scanf("%d",&T);
+    for(int t=1;t<=T;t++)
+    {
+        memset(lazy,-1,sizeof(lazy));
+        scanf("%d",&N);
+        int jishu=0;
+        for(int i=1;i<=N;i++)
+        {
+            scanf("%d%d",&x,&y);
+            shu[++jishu]=x;
+            shu[++jishu]=y;
+            xx[i]=x;yy[i]=y;
+        }
+        int ct=1;
+        sort(shu+1,shu+N+N+1);
+        qq[shu[1]]=ct;
+        for(int i=2;i<=2*N;i++)
+        {
+                if(shu[i]==shu[i-1]+1)
+                {
+                    qq[shu[i]]=++ct;
+                }
+                else if(shu[i]>shu[i-1]+1)
+                {
+                    qq[shu[i]]=ct+2;
+                    ct+=2;
+                }
+        }
+
+        for(int i=1;i<=N;i++)
+        {
+            if(xx[i]<=yy[i])
+            {
+                qujian(1,ct,1,qq[xx[i]],qq[yy[i]],i);
+            }
+        }
+        memset(shuzu,0,sizeof(shuzu));
+        last=-1;
+        dfs(1,ct,1);
+        int cnt=0;
+        for(int i=1;i<=N;i++)
+        {
+            if(shuzu[i]!=0)cnt++;
+        }
+        printf("%d\n",cnt);
+    }
+    return 0;
+}
