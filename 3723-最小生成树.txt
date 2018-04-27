@@ -1,0 +1,76 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <set>
+#include <string>
+#include <queue>
+#include <map>
+#include <vector>
+#include <math.h>
+#include <sstream>
+#include <algorithm>
+#include <stack>
+#include <time.h>
+#include <functional>
+using namespace std;
+int N,K,M,T,R;
+#define INF 1234123412
+int pre[20010];
+int find(int x)
+{
+    return x==pre[x]?x:pre[x]=find(pre[x]);
+}
+
+struct edge
+{
+    int from;
+    int to;
+    int cost;
+};
+struct edge shuzu[100100];
+
+bool com(struct edge a,struct edge b)
+{
+    return a.cost<b.cost;
+}
+
+int main()
+{
+    scanf("%d",&T);
+    int x1,x2,x3;
+    for(int k=0;k<T;k++)
+    {
+        for(int i=0;i<20010;i++)
+        {
+            pre[i]=i;
+        }
+        int ans=0;
+        int cnt=0;
+        scanf("%d%d%d",&N,&M,&R);
+        for(int j=0;j<R;j++)
+        {
+            scanf("%d%d%d",&x1,&x2,&x3);
+            x2+=N;
+            shuzu[cnt].from=x1;
+            shuzu[cnt].to=x2;
+            shuzu[cnt].cost=-x3;
+            cnt++;
+        }
+
+        sort(shuzu,shuzu+cnt,com);
+
+        for(int i=0;i<cnt;i++)
+        {
+            int x=find(shuzu[i].from);
+            int y=find(shuzu[i].to);
+            if(x!=y)
+            {
+                pre[x]=y;
+                ans+=shuzu[i].cost;
+            }
+
+        }
+        printf("%d\n",10000*(N+M)+ans);
+    }
+    return 0;
+}

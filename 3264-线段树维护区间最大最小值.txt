@@ -1,0 +1,77 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define maxn 100010
+#define INF 1234123412
+int tree[maxn*4+50];
+int tree2[maxn*4+50];
+//int lazy[maxn*4+50];
+int maxans,minans;
+void up(int rt)
+{
+    tree[rt]=max(tree[rt*2],tree[rt*2+1]);
+    tree2[rt]=min(tree2[rt*2],tree2[rt*2+1]);
+}
+
+void build(int l,int r,int rt)
+{
+    if(l==r)
+    {
+        scanf("%d",&tree[rt]);
+        tree2[rt]=tree[rt];
+        return ;
+    }
+    int mid=(l+r)/2;
+    build(l,mid,rt*2);
+    build(mid+1,r,rt*2+1);
+    up(rt);
+}
+
+void getmax(int l,int r,int rt,int ql,int qr)
+{
+    if(ql<=l&&qr>=r)
+    {
+        maxans=max(maxans,tree[rt]);
+        return ;
+    }
+    int mid=(l+r)/2;
+    if(ql<=mid)getmax(l,mid,rt*2,ql,qr);
+    if(qr>mid)getmax(mid+1,r,rt*2+1,ql,qr);
+}
+
+void getmin(int l,int r,int rt,int ql,int qr)
+{
+    if(ql<=l&&qr>=r)
+    {
+        minans=min(minans,tree2[rt]);
+        return;
+    }
+    int mid=(l+r)/2;
+    if(ql<=mid)getmin(l,mid,rt*2,ql,qr);
+    if(qr>mid)getmin(mid+1,r,rt*2+1,ql,qr);
+
+}
+
+int main()
+{
+    int ql,qr;
+    int N,M;
+    while(scanf("%d%d",&N,&M)!=EOF)
+    {
+        memset(tree,0,sizeof(tree));
+        memset(tree2,0,sizeof(tree2));
+        build(1,N,1);
+        for(int j=1;j<=M;j++)
+        {
+            scanf("%d%d",&ql,&qr);
+                maxans=-1;
+                minans=INF;
+                getmax(1,N,1,ql,qr);
+                getmin(1,N,1,ql,qr);
+                printf("%d\n",maxans-minans);
+        }
+    }
+    return 0;
+}

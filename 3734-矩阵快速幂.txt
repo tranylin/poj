@@ -1,0 +1,71 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <queue>
+#include <vector>
+#include <map>
+#include <set>
+#include <string.h>
+#include <iterator>
+#include <functional>
+#include <stdio.h>
+using namespace std;
+#define MAXV 10001
+#define MAXE 1000010
+#define INF 2134567899
+#define ll long long
+#define MO 10007
+int N, T;
+typedef vector<int> vec;
+typedef vector<vec> mat;
+
+mat mul(mat A, mat B)
+{
+	mat C(A.size(), vec(B[0].size()));
+	for (int i = 0;i < A.size();i++)
+	{
+		for (int k = 0;k < B.size();k++)
+		{
+			for (int j = 0;j < B[0].size();j++)
+			{
+				C[i][j] = (C[i][j] + A[i][k] * B[k][j])%MO;
+			}
+		}
+	}
+	return C;
+}
+
+mat pow(mat A, ll n)
+{
+	mat B(A.size(), vec(A.size()));
+	for (int i = 0;i < A.size();i++)
+	{
+		B[i][i] = 1;
+	}
+	while (n > 0)
+	{
+		if (n & 1)
+		{
+			B = mul(B, A);
+		}
+		A = mul(A, A);
+		n >>= 1;
+	}
+	return B;
+}
+
+int main()
+{
+	cin >> T;
+	for (int i = 0;i < T;i++)
+	{
+		cin >> N;
+		mat A(3, vec(3));
+		A[0][0] = 2;A[0][1] = 1;A[0][2] = 0;
+		A[1][0] = 2;A[1][1] = 2;A[1][2] = 2;
+		A[2][0] = 0;A[2][1] = 1;A[2][2] = 2;
+		A = pow(A, N);
+		cout << A[0][0] << endl;
+
+	}
+}

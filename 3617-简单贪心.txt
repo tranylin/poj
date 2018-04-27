@@ -1,0 +1,80 @@
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+#include<map>
+#include<vector>
+#include<queue>
+#include<stack>
+#include <iostream>
+using namespace std;
+//#define ll long long
+typedef vector<int> vec;
+typedef vector<vec> mat;
+int N, K;
+
+
+int main()
+{
+	char ans[2010];
+	char shuzu[2010];
+	cin >> N;
+
+	for (int i = 1;i <= N;i++)
+	{
+		cin >> shuzu[i];
+		
+	}
+
+	int l = 1;
+	int r = N;
+	int cnt = 0;
+	while (l < r)
+	{
+		if (shuzu[l] - 'A' < shuzu[r] - 'A')
+		{
+			ans[++cnt] = shuzu[l];
+			l++;
+		}
+		else if (shuzu[l] - 'A' > shuzu[r] - 'A')
+		{
+			ans[++cnt] = shuzu[r];
+			r--;
+		}
+		else
+		{
+			int ll = l + 1;
+			int rr = r - 1;
+			while (ll < rr&&shuzu[ll] == shuzu[rr])
+			{
+				ll++;
+				rr--;
+			}
+			if (ll >= rr)
+			{
+				ans[++cnt] = shuzu[l];
+				l++;
+			}
+			else
+			{
+				if (shuzu[ll] < shuzu[rr])
+				{
+					ans[++cnt] = shuzu[l];
+					l++;
+				}
+				else
+				{
+					ans[++cnt] = shuzu[r];
+					r--;
+				}
+			}
+		}
+	}
+	ans[++cnt] = shuzu[l];
+	for (int i = 1;i <= cnt;i++)
+	{
+		cout << ans[i] ;
+		if (i % 80 == 0)cout << endl;
+	}
+	if(cnt%80!=0)cout << endl;
+}
