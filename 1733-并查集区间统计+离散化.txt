@@ -1,0 +1,103 @@
+#include<stdio.h>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <map>
+#include <algorithm>
+using namespace std;
+int N, M;
+const int maxn = 200005;
+
+int pre[maxn];
+int dist[maxn];
+map<int, int> ditu;
+struct data
+{
+	int x;
+	int y;
+	int tag;
+};
+
+int find(int x)
+{
+	if (pre[x] == x)
+	{
+		return x;
+	}
+	int fx = pre[x];
+	pre[x] = find(pre[x]);
+	dist[x] = (dist[x]+dist[fx])%2;
+	return pre[x];
+}
+
+int main()
+{
+	int x, y, biaoji;
+	char jiou[6];
+	int ans;
+	while (scanf("%d%d", &N, &M) != EOF)
+	{
+		vector<struct data> V;
+		set<int> qq;
+		ans = 0;
+		struct data tmp;
+		for (int i = 1;i <= M;i++)
+		{
+			scanf("%d%d%s", &x, &y, &jiou);
+			x -= 1;
+			qq.insert(x);
+			qq.insert(y);
+			if (jiou[0] == 'e')biaoji = 0;
+			else biaoji = 1;
+			V.push_back({ x,y,biaoji });
+		}
+		set<int>::iterator it = qq.begin();
+		int jishu = 1;
+		while (it!=qq.end())
+		{
+			ditu[*it] = jishu;
+			jishu++;
+			it++;
+		}
+		for (int i = 0;i <= 2*M;i++)
+		{
+			pre[i] = i;
+			dist[i] = 0;
+		}
+		int ans = 0;
+		bool sign = true;
+		for (int j = 0;j < V.size();j++)
+		{
+			int x = ditu[V[j].x];
+			int y = ditu[V[j].y];
+			int label = V[j].tag;
+			int fx = find(x);
+			int fy = find(y);
+			if (fx == fy)
+			{
+				if ((dist[x] - dist[y] + 2) % 2 != label)
+				{
+					ans = j;
+					sign = false;
+					break;
+				}
+			}
+			else
+			{
+				if (fx > fy)
+				{
+					pre[fy] = fx;
+					dist[fy] = (dist[x] - label - dist[y] + 2) % 2;
+				}
+				else
+				{
+					pre[fx] = fy;
+					dist[fx] = (label + dist[y] - dist[x] + 2) % 2;
+				}
+			}
+		}
+		if (sign == true)ans = V.size();
+		printf("%d\n", ans);
+	}
+	return 0;
+}
