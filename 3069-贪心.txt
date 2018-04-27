@@ -1,0 +1,44 @@
+#include<cstdio>  
+#include<cstring>  
+#include <iostream>
+#include<algorithm>  
+using namespace std;
+int shuzu[1010];
+int R, N;
+int main()
+{
+	while (cin >> R >> N)
+	{
+		if (N == -1 && R == -1)
+		{
+			break;
+		}
+		for (int i = 1;i <= N;i++)
+		{
+			cin >> shuzu[i];
+		}
+		sort(shuzu + 1, shuzu + N + 1);
+		int ans = 0;
+		int pos;
+		int now = 1;
+		int left = 1;
+		while (now <= N)
+		{
+			while (shuzu[left] + R >= shuzu[now])
+			{
+				now++;
+			}
+			left = now - 1;
+			ans++;
+			pos = now;
+			while (shuzu[left] + R >= shuzu[pos])
+			{
+				pos++;
+			}
+			left = pos;
+			now = pos;
+
+		}
+		cout << ans << endl;
+	}
+}

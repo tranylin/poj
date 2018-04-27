@@ -1,0 +1,52 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <queue>
+#include <vector>
+#include <map>
+#include <set>
+#include <string.h>
+#include <iterator>
+#include <functional>
+#include <stdio.h>
+using namespace std;
+#define MAXV 10001
+#define MAXE 1000010
+#define INF 2134567899
+#define ll long long
+#define MO 10007
+#define SIZE 1005
+#define MAXS 10005
+int N, K, M, T;
+const double EPS = 1E-8;
+typedef vector<double> vec;
+typedef vector<vec> mat;
+
+int f[1010];
+int shuzu[1010];
+bool com2(int a, int b) { return a <= b; }//最长不下降子序列
+bool com3(int a, int b) { return a > b; }//最长下降子序列
+bool com4(int a, int b) { return a >= b; }//最长不上升子序列
+
+
+
+
+
+int main()
+{
+	cin >> N;
+	for (int i = 1;i <= N;i++)
+	{
+		scanf("%d", &shuzu[i]);
+	}
+	int len = 1;
+	memset(f, 0, sizeof(f));
+	f[len] = shuzu[1];
+
+	for (int i = 2;i <= N;i++)
+	{
+		shuzu[i] >= f[len] ? f[++len] = shuzu[i] : f[lower_bound(f + 1, f + len + 1, shuzu[i],com2) - f] = shuzu[i];
+	}
+	cout << len << endl;
+	return 0;
+}

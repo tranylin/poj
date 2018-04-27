@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <map>
+#include <functional>
+#include <queue>
+#include <vector>
+using namespace std;
+#define INF 1234123412
+#define MAXV 10001
+#define MAXE 100001
+int V, E, S, T;
+int N, K;
+
+
+int ar[100010];
+
+int main()
+{
+	cin >> T;
+	for(int j=0;j<T;j++)
+	{
+		cin >> N >> S;
+		memset(ar, 0, sizeof(ar));
+		for (int i = 0;i < N;i++)
+		{
+			cin >> ar[i];
+		}
+
+		int sum = 0;
+		int tou = 0;
+		int wei = 0;
+		int res = N + 1;
+		for (;;)
+		{
+			while (wei < N&&sum < S)
+			{
+				sum += ar[wei++];
+			}
+			if (sum < S)break;
+			res = min(res, wei - tou);
+			sum -= ar[tou++];
+		}
+		if (res == N + 1)cout << 0 << endl;
+		else cout << res << endl;
+	}
+	return 0;
+}

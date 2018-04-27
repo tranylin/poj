@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <stdio.h>
+#include <string>
+#include <string.h>
+int N, M;
+using namespace std;
+#define MAXN 520
+int pre[MAXN];
+int val[MAXN];
+int conflict[MAXN];//表示枚举第个值作为裁判时矛盾出现在第几行
+struct data
+{
+	int x1, x2, c;
+};
+struct data qq[2110];
+
+void init()
+{
+	for (int i = 0;i<MAXN;i++)
+	{
+		pre[i] = i;
+		val[i] = 0;//初始态自己父亲是自己，自己和自己同类
+	}
+}
+
+int find(int x)
+{
+	if (pre[x] == x)
+	{
+		return x;
+	}
+	int fx = pre[x];
+	pre[x] = find(pre[x]);
+	val[x] = (val[x] + val[fx]) % 3;
+	return pre[x];
+}
+void join(int x, int y, int fx, int fy, int c)
+{
+	pre[fy] = fx;
+	val[fy] = (val[x] - val[y] + c + 3) % 3;
+}
+int main()
+{
+	int x1, x2, c;
+    char s;
+	int a, b;
+	int ans, round;
+	while (scanf("%d%d", &N, &M) != EOF)
+	{
+		init();
+		memset(conflict, 0, sizeof(conflict));
+		int num = 0;
+		round = 0;
+		for (int i = 1;i <= M;i++)
+		{
+			scanf("%d%c%d",&x1,&s,&x2);
+			if(s=='=')qq[i].c=0;
+			if(s=='<')qq[i].c=1;
+                        if(s=='>')qq[i].c=2;
+
+			qq[i].x1=x1;
+			qq[i].x2=x2;
+		}
+		for (int i = 0;i<N;i++)
+		{
+			init();
+			for (int j = 1;j <= M;j++)
+			{
+				x1 = qq[j].x1;
+				x2 = qq[j].x2;
+				c = qq[j].c;
+
+				if (x1 == i || x2 == i)continue;
+				int fx1 = find(x1);
+				int fx2 = find(x2);
+				if (fx1 == fx2)
+				{
+					int t = (3 - val[x1] + val[x2]) % 3;
+					if (t != c)
+					{
+						conflict[i] = j;
+						break;
+					}
+				}
+				else
+				{
+					join(x1, x2, fx1, fx2, c);
+				}
+
+			}
+		}
+		for (int i = 0;i<N;i++)
+		{
+			round = max(round, conflict[i]);
+			if (conflict[i] == 0)
+			{
+				ans = i;
+				num++;
+			}
+		}
+		if (num>1)
+		{
+			printf("Can not determine\n");
+		}
+		else
+		{
+			if (num == 0)
+			{
+				printf("Impossible\n");
+			}
+			else
+			{
+				printf("Player %d can be determined to be the judge after %d lines\n", ans, round);
+			}
+		}
+	}
+}
