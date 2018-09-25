@@ -1,0 +1,92 @@
+#include <iostream>
+#include <stdio.h>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <functional>
+#include <math.h>
+#define MAXN 2010
+#define ll long long
+using namespace std;
+
+double L;
+int N;//平面上顶点总数
+int top;//凸包中顶点数
+struct point
+{
+    double x,y;
+};
+struct point q[MAXN],hull[MAXN];//hull是凸包，q是输入的数据
+
+point operator - (point a,point b)
+{
+    return point{a.x-b.x,a.y-b.y};
+}
+double cross(point a,point b)
+{
+    return a.x*b.y-a.y*b.x;
+}
+
+double dist(point a,point b)
+{
+    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+}
+
+bool com(struct point a,struct point b)
+{
+    double tem=cross(a-q[0],b-q[0]);
+    if(tem>0||(tem==0&&dist(a,q[0])<dist(b,q[0])))return true;
+    return false;
+}
+
+void swap(double &a,double &b)
+{
+    double tem=a;
+    a=b;
+    b=tem;
+}
+
+void graham()
+{
+    int u=0;//找一个点作为极坐标的原点
+    for(int i=0;i<N;i++)
+    {
+        if(q[i].y<q[u].y||(q[i].y==q[u].y&&q[i].x<q[u].x))u=i;
+    }
+    swap(q[0].x,q[u].x);
+    swap(q[0].y,q[u].y);
+    sort(q+1,q+N,com);
+
+    top=0;
+    for(int i=0;i<N;i++)
+    {
+        while(top>1&&cross(hull[top-1]-hull[top-2],q[i]-hull[top-1])<=0)
+        {
+            top--;
+        }
+        hull[top++]=q[i];
+    }
+}
+
+int main()
+{
+    while(scanf("%d%lf",&N,&L)!=EOF)
+    {
+        double ans;
+        if(N==0)break;
+        for(int i=0;i<N;i++)
+        {
+            scanf("%lf%lf",&q[i].x,&q[i].y);
+        }
+        graham();
+        ans=0;
+        for(int i=0;i<top;i++)
+        {
+            ans+=dist(hull[i],hull[(i+1)%top]);
+        }
+        double circle=2*3.1415926*L;
+        printf("%.0f\n",ans+circle);
+
+    }
+    return 0;
+}
